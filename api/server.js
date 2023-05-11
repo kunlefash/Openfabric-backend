@@ -1,5 +1,11 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');const {
+  generateToken,
+  verifyToken,
+  hashPassword,
+  comparePasswords
+} = require('./src/auth.js');
+
 
 const app = express();
 const PORT = 3000;
