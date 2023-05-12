@@ -6,8 +6,20 @@ const {
   hashPassword,
   comparePasswords,
 } = require("./src/auth.js");
-// const { MongoClient } = require("mongodb");
+require("dotenv").config();
+const mongoose = require("mongoose");
 
+const uri = process.env.MONGODB_URI;
+
+const { MongoClient } = require("mongodb");
+mongoose
+  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((error) => {
+    console.error("Error connecting to MongoDB:", error);
+  });
 const app = express();
 const PORT = 3000;
 // const uri = "mongodb://localhost:27017";
@@ -48,12 +60,24 @@ app.get("/products/:id", (req, res) => {
 });
 
 // POST a new product
-app.post("/products", (req, res) => {
-  const product = req.body;
-  product.id = products.length + 1;
-  products.push(product);
-
-  res.status(201).json(product);
+app.post("/products", async (req, res) => {
+  try {
+    const { name, description } = req.body;
+    const product = new Product({ name, description });
+    await product.save();
+    res.status(201).json({ message: "Product created successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to create product" });
+  }
+});
+// Get all products
+app.get("/products", async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to retrieve products" });
+  }
 });
 
 // PUT (update) a product

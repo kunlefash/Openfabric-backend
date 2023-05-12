@@ -27,6 +27,25 @@ async function hashPassword(password) {
   const salt = await bcrypt.genSalt(10);
   return bcrypt.hash(password, salt);
 }
+// Would be implemented for Login
+// function authenticateToken(req, res, next) {
+//     const authHeader = req.headers['authorization'];
+//     const token = authHeader && authHeader.split(' ')[1];
+    
+//     if (!token) {
+//       return res.status(401).json({ message: 'Missing token' });
+//     }
+    
+//     jwt.verify(token, 'secret-key', (err, user) => {
+//       if (err) {
+//         return res.status(403).json({ message: 'Invalid token' });
+//       }
+      
+//       req.user = user;
+//       next();
+//     });
+//   }
+  
 
 // Function to compare passwords
 function comparePasswords(password, hashedPassword) {
